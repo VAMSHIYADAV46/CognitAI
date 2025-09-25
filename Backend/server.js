@@ -14,10 +14,16 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// CORS: only allow your frontend origin
-const allowedOrigins = ["https://cognitai.onrender.com"]; // frontend URL
+// ✅ CORS: only allow your frontend origin
+const allowedOrigins = ["https://cognitai.onrender.com"]; // deployed frontend URL
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow server-to-server or curl requests
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("Not allowed by CORS"), false);
+    }
+    return callback(null, true);
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true, // allow cookies if needed
 }));
