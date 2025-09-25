@@ -13,7 +13,14 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+// CORS: only allow your frontend origin
+const allowedOrigins = ["https://cognitai.onrender.com"]; // frontend URL
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true, // allow cookies if needed
+}));
 
 // API Routes
 app.use("/api", ChatRoutes);
@@ -25,15 +32,15 @@ const connectDB = async () => {
     console.log("✅ Database Connected Successfully");
   } catch (err) {
     console.error("❌ Error While Connecting to database:", err.message);
-    process.exit(1); // Stop app if DB connection fails
+    process.exit(1);
   }
 };
 
-// ✅ Serve frontend (dist if Vite, build if CRA)
+// Serve frontend
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, "../Frontend/dist"))); // change to "../Frontend/build" if CRA
+app.use(express.static(path.join(__dirname, "../Frontend/dist"))); // or "../Frontend/build" if CRA
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/dist/index.html")); // or "../Frontend/build/index.html"
