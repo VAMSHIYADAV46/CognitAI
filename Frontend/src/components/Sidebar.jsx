@@ -1,4 +1,7 @@
 import "../styles/Sidebar.css";
+import blackBrainLogo from "../assets/black brain logo.svg";
+
+
 import { useContext, useEffect } from "react";
 import MyContext from "../MyContext.jsx";
 import { v4 as uuidv4 } from "uuid";
@@ -70,7 +73,9 @@ function Sidebar() {
   return (
     <section className="sidebar">
       <button onClick={createNewChat}>
-        <img src="./src/assets/black brain logo.svg" className="logo" alt="Logo" />
+
+        <img src={blackBrainLogo} className="logo" alt="Logo" />
+
         <span><i className="fa-solid fa-pen-to-square"></i></span>
       </button>
 
