@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 import MyContext from "../MyContext.jsx";
 import { v4 as uuidv4 } from "uuid";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8080/api"; // dynamic base URL
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080/api"; // dynamic base URL
 
 function Sidebar() {
   const {
