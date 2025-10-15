@@ -44,7 +44,7 @@ function Sidebar() {
 
   useEffect(() => {
     getAllThreads();
-  }, []);
+  }, [currThreadId]); // Refresh threads when current thread ID changes
 
   const changeThread = async (newThreadId) => {
     setCurrThreadId(newThreadId);
