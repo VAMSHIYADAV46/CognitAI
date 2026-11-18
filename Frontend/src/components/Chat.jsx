@@ -3,8 +3,11 @@ import React, { useContext, useState, useEffect } from "react";
 import MyContext from "../MyContext";
 
 import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeHighlight from "rehype-highlight";
 
 import "highlight.js/styles/github-dark.css";
 
@@ -13,6 +16,7 @@ function Chat() {
 
   const [latestReply, setLatestReply] = useState(null);
 
+  // Character-based streaming
   useEffect(() => {
     if (reply === null || reply === undefined) {
       setLatestReply(null);
@@ -42,7 +46,7 @@ function Chat() {
     return (
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
       >
         {content || ""}
       </ReactMarkdown>
