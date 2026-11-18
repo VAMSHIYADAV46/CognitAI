@@ -137,3 +137,78 @@ input:focus {
     background-color: rgba(180, 180, 180, 0.1);
     border-radius: 6px;
 }
+
+
+/* model picker (drop up, inside the input box next to send button) */
+
+.inputBox input {
+    padding-right: 200px;
+}
+
+.modelPicker {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+}
+
+.modelBtn {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #e5e5e5;
+    border: none;
+    border-radius: 10px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.modelBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modelBtn i {
+    font-size: 0.65rem;
+    margin-left: 0.3rem;
+}
+
+.modelMenu {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    right: 0;
+    left: auto;
+    min-width: 240px;
+    background-color: #323232;
+    border-radius: 10px;
+    padding: 0.3rem;
+    z-index: 1000;
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modelOption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modelOption:hover,
+.modelOption.active {
+    background-color: rgba(180, 180, 180, 0.1);
+}
+
+.modelText {
+    display: flex;
+    flex-direction: column;
+}
+
+.modelName {
+    font-size: 0.85rem;
+}
+
+.modelNote {
+    font-size: 0.72rem;
+    color: #b4b4b4;
+}
