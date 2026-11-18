@@ -1,84 +1,86 @@
-import "../styles/Chat.css"
+import "../styles/Chat.css";
 import React, { useContext, useState, useEffect } from "react";
-import MyContext  from "../MyContext";
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
+import MyContext from "../MyContext";
+
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+
 import "highlight.js/styles/github-dark.css";
 
-function Chat(){
-    const {newChat, prevChats, reply} = useContext(MyContext);
-     const [latestReply, setLatestReply] = useState(null);
+function Chat() {
+  const { newChat, prevChats, reply } = useContext(MyContext);
 
-     useEffect(() => {
-        if(reply === null) {
-            setLatestReply(null); // loading prevChats
-            return;
-        }
+  const [latestReply, setLatestReply] = useState(null);
 
-        if(!prevChats?.length) return;
+  useEffect(() => {
+    if (reply === null || reply === undefined) {
+      setLatestReply(null);
+      return;
+    }
 
-        const content = reply.split(" "); //words
+    let idx = 0;
+    const chunkSize = 5;
 
-        let idx = 0;
-        const interval = setInterval(() => {
-            setLatestReply(content.slice(0, idx+1).join(" "));
+    setLatestReply("");
 
-            idx++;
-            if(idx >= content.length) clearInterval(interval);
-        }, 40);
+    const interval = setInterval(() => {
+      idx += chunkSize;
 
-        return () => clearInterval(interval);
+      setLatestReply(reply.slice(0, idx));
 
-    }, [prevChats, reply])
+      if (idx >= reply.length) {
+        clearInterval(interval);
+      }
+    }, 20);
 
+    return () => clearInterval(interval);
+  }, [reply]);
 
+  // Common Markdown renderer
+  const renderMarkdown = (content) => {
     return (
-        <>
-            {/* {newChat && <h1>Let’s Chat! What’s up today?</h1>} */}
-            {!newChat ?   <h1></h1> : <h1>Let’s Chat! What’s up today?</h1>}
-            
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+      >
+        {content || ""}
+      </ReactMarkdown>
+    );
+  };
 
+  return (
+    <>
+      {newChat && <h1>Let's Chat! What's up today?</h1>}
 
-             <div className="chats">
-                {
-                    prevChats?.slice(0, -1).map((chat, idx) => 
-                        <div className={chat.role === "user"? "userDiv" : "gptDiv"} key={idx}>
-                            {
-                                chat.role === "user"? 
-                                <p className="userMessage">{chat.content}</p> : 
-                                // <p className="gptMessage">{chat.content}</p> 
-                                <ReactMarkdown  rehypePlugins={rehypeHighlight}>{chat.content}</ReactMarkdown>
-                                
-                            }
-                        </div>
-                    )
-                }
+      <div className="chats">
+        {/* Previous messages */}
+        {prevChats?.slice(0, -1).map((chat, idx) => (
+          <div
+            className={chat.role === "user" ? "userDiv" : "gptDiv"}
+            key={idx}
+          >
+            {chat.role === "user" ? (
+              <p className="userMessage">{chat.content}</p>
+            ) : (
+              renderMarkdown(chat.content)
+            )}
+          </div>
+        ))}
 
-                {
-                    prevChats.length > 0  && (
-                        <>
-                            {
-                                latestReply === null ? (
-                                    <div className="gptDiv" key={"non-typing"} >
-                                    <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkdown>
-                                </div>
-                                ) : (
-                                    <div className="gptDiv" key={"typing"} >
-                                     <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{latestReply}</ReactMarkdown>
-                                </div>
-                                )
-
-                            }
-                        </>
-                    )
-                }
-             </div>
-        </>
-    )
+        {/* Latest message */}
+        {prevChats?.length > 0 && (
+          <div className="gptDiv" key="latest-reply">
+            {renderMarkdown(
+              latestReply === null
+                ? prevChats[prevChats.length - 1].content
+                : latestReply,
+            )}
+          </div>
+        )}
+      </div>
+    </>
+  );
 }
 
-export default Chat
-
-
-
-
+export default Chat;
